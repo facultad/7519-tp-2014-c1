@@ -1,0 +1,13 @@
+/uploads/*
+tags
+*.swp
+*.swo
+*.pyc
+ambiente.py
+.coverage
+django.mo
+*.log
+/static/*
+db.sqlite3
+*.lprof
+acs_example.py
