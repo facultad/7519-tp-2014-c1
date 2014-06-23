@@ -31,7 +31,7 @@ class Problema(models.Model):
 
   descripcion = models.CharField(max_length=100, verbose_name=_(u'Descripción'), unique=True)
   max_generations = models.IntegerField(verbose_name=_(u'Máxima cantidad generaciones'), default=50)
-  pop_size = models.IntegerField(verbose_name=_(u'Tamaño POP'), default=10)
+  pop_size = models.IntegerField(verbose_name=_(u'Tamaño de la población'), default=10)
   distancia_solucion = models.IntegerField(verbose_name=_(u'Distancia del recorrido'), default=0,
     help_text=_(u'Distancia del recorrido una vez solucionado el problema, pasando por todas '+
       u'las ciudades y volviendo a la ciudad inicial'))
