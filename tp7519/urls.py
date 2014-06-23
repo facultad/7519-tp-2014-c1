@@ -8,5 +8,6 @@ urlpatterns = patterns('',
     # url(r'^$', 'tp7519.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
+    url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', include(admin.site.urls)),
 )

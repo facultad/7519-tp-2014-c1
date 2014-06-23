@@ -20,14 +20,20 @@ class Ciudad(models.Model):
     verbose_name_plural = _(u"Ciudades")
     unique_together = (('x', 'y'),)
 
+  def __unicode__(self):
+    return u'%s' % self.descripcion
+
 class Problema(models.Model):
 
   descripcion = models.CharField(max_length=100, verbose_name=_(u'Descripción'), unique=True)
   max_generations = models.IntegerField(verbose_name=_(u'Máxima cantidad generaciones'), default=50)
   pop_size = models.IntegerField(verbose_name=_(u'Tamaño POP'), default=10)
-  distancia_solucion = models.IntegerField(verbose_name=_(u'Distancia del recorrido'), default=10,
+  distancia_solucion = models.IntegerField(verbose_name=_(u'Distancia del recorrido'), default=0,
     help_text=_(u'Distancia del recorrido una vez solucionado el problema, pasando por todas '+
       u'las ciudades y volviendo a la ciudad inicial'))
+
+  def __unicode__(self):
+    return u'%s' % self.descripcion
 
   def get_ciudades(self):
     for cp in self.ciudadproblema_set.all():
@@ -114,4 +120,4 @@ class ResolucionProblema(models.Model):
     ordering = ['orden']
     verbose_name = _(u"Resolución")
     verbose_name_plural = _(u"Resolución")
-    unique_together = (('orden', 'ciudad', 'problema'),)
+    unique_together = (('ciudad', 'problema'),)
