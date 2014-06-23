@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.db import models
 from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 from .exceptions import ProblemaSinCiudadesError, ProblemaConUnicaCiudadError
 from django.db import transaction
 from random import Random
@@ -22,6 +23,9 @@ class Ciudad(models.Model):
 
   def __unicode__(self):
     return u'%s' % self.descripcion
+
+  def distancia(self, ciudad):
+    return math.sqrt((self.x - ciudad.x)**2 + (self.y - ciudad.y)**2)
 
 class Problema(models.Model):
 
@@ -46,7 +50,7 @@ class Problema(models.Model):
     for ciudad_i in ciudades:
       j = 0
       for ciudad_j in ciudades:
-        pesos[i][j] = math.sqrt((ciudad_i.x - ciudad_j.x)**2 + (ciudad_i.y - ciudad_j.y)**2)
+        pesos[i][j] = ciudad_i.distancia(ciudad_j)
         j += 1
       i += 1
     return pesos
@@ -110,6 +114,14 @@ class CiudadProblema(models.Model):
     verbose_name_plural = _(u"Ciudades problema")
     unique_together = (('problema', 'ciudad'),)
 
+  def get_x(self):
+    return self.ciudad.x
+  get_x.short_description = ugettext_lazy(u'Posición X')
+
+  def get_y(self):
+    return self.ciudad.y
+  get_y.short_description = ugettext_lazy(u'Posición Y')
+
 class ResolucionProblema(models.Model):
 
   orden = models.IntegerField(verbose_name=_(u'Orden'))
@@ -121,3 +133,23 @@ class ResolucionProblema(models.Model):
     verbose_name = _(u"Resolución")
     verbose_name_plural = _(u"Resolución")
     unique_together = (('ciudad', 'problema'),)
+
+  def distancia_al_siguiente(self):
+    resolucion = ResolucionProblema.objects.filter(
+      problema=self.problema)
+    try:
+      rp = resolucion.get(orden=self.orden+1)
+    except ResolucionProblema.DoesNotExist:
+      rp = resolucion.get(orden=0)
+    return round(self.ciudad.distancia(rp.ciudad),2)
+  distancia_al_siguiente.short_description = ugettext_lazy(u'Distancia al siguiente')
+
+  def get_x(self):
+    return self.ciudad.x
+  get_x.short_description = ugettext_lazy(u'Posición X')
+
+  def get_y(self):
+    return self.ciudad.y
+  get_y.short_description = ugettext_lazy(u'Posición Y')
+
+

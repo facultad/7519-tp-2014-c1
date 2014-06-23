@@ -62,3 +62,8 @@ class ViajanteTestCase(TestCase):
 
     self.assertEqual(len(ordenes),5)
 
+    distancia_total = 0
+    for rp in ResolucionProblema.objects.all():
+      distancia_total += rp.distancia_al_siguiente()
+
+    self.assertEqual(distancia_total, problema.distancia_solucion)

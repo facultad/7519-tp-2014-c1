@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'grappelli.dashboard',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,6 +51,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+  "django.contrib.auth.context_processors.auth",
+  "django.core.context_processors.request",
+  "django.core.context_processors.i18n",
+  'django.contrib.messages.context_processors.messages',
 )
 
 ROOT_URLCONF = 'tp7519.urls'
@@ -87,3 +95,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 GRAPPELLI_ADMIN_TITLE = _('75.19 - TP - Resolucion Problema Viajante - Ant Colony Optimization')
+GRAPPELLI_INDEX_DASHBOARD = 'tp7519.dashboard.CustomIndexDashboard'
