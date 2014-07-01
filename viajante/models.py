@@ -35,6 +35,9 @@ class Problema(models.Model):
   distancia_solucion = models.IntegerField(verbose_name=_(u'Distancia del recorrido'), default=0,
     help_text=_(u'Distancia del recorrido una vez solucionado el problema, pasando por todas '+
       u'las ciudades y volviendo a la ciudad inicial'))
+  tiempo_resolucion = models.DecimalField(max_digits=7, decimal_places=3, 
+    verbose_name=_(u'Tiempo Resolución (seg.)'), default=0,
+    help_text=_(u'Tiempo que se demoró en obtener la solución (en segundos).'))
 
   def __unicode__(self):
     return u'%s' % self.descripcion
@@ -61,8 +64,17 @@ class Problema(models.Model):
   def has_unica_ciudad(self):
     return self.ciudadproblema_set.count() == 1
 
+  def add_todas_las_ciudades(self):
+    ids_ciudades = [ ciudad.id for ciudad in self.get_ciudades() ]
+    for ciudad in Ciudad.objects.all():
+      if ciudad.id in ids_ciudades:
+        continue
+      self.ciudadproblema_set.create(ciudad=ciudad)
+
   @transaction.atomic
   def resolver(self):
+
+    tiempo_inicial = time()
 
     if not self.has_ciudades():
       raise ProblemaSinCiudadesError()
@@ -87,6 +99,10 @@ class Problema(models.Model):
     
     best = max(ac.archive)
     self.distancia_solucion = 1/best.fitness
+
+    tiempo_final = time()
+
+    self.tiempo_resolucion = tiempo_final - tiempo_inicial
 
     self.resolucionproblema_set.all().delete()
 
@@ -152,4 +168,12 @@ class ResolucionProblema(models.Model):
     return self.ciudad.y
   get_y.short_description = ugettext_lazy(u'Posición Y')
 
+from django.db.models.signals import post_save
 
+def on_problema_create_add_todas_las_ciudades(sender, instance, created, **kwargs):
+  if not created:
+    return
+  instance.add_todas_las_ciudades()
+
+post_save.connect(on_problema_create_add_todas_las_ciudades, 
+  sender=Problema)

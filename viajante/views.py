@@ -28,4 +28,3 @@ class ExecuteProblemaMethodView(ExecuteMethodView):
   def redirect(self, instance):
     return redirect('/admin/viajante/problema/%s/' % instance.id)
 
-

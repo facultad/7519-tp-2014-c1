@@ -22,7 +22,7 @@ class ResolucionProblemaAdmin(admin.ModelAdmin):
   list_filter=['problema',]
 
 class ProblemaAdmin(admin.ModelAdmin):
-  readonly_fields=['id', 'distancia_solucion']
+  readonly_fields=['id', 'distancia_solucion', 'tiempo_resolucion']
   model=Problema
   list_display=['id','descripcion',]
   list_display_links = ('id', 'descripcion')
